@@ -1,0 +1,11 @@
+{
+  "greeting": "Bem vindo ao",
+  "app-name": "DeezToSpot",
+  "app-version": "0.0.1",
+  "playlist": "ID da Playlist do Deezer",
+  "playlistSpotify": "ID da Playlist do Sportify",
+  "convert":"Converter",
+  "credit": "Criado por :",
+  "author": "Marcos Bérgamo"
+
+}

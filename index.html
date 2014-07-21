@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Bacon DeezToSpot</title>
+    <!-- Include the stylesheets you need for the Views components -->
+    <!-- See https://developer.spotify.com/docs/apps/views/1.0/ -->
+    <link rel="stylesheet" href="$views/css/image.css">
+    <link rel="stylesheet" href="$views/css/list.css">
+    <link rel="stylesheet" href="$views/css/buttons.css">
+    <!-- <link rel="stylesheet" href="$views/css/throbber.css"> -->
+    <link rel="stylesheet" href="css/style.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+    
+  </head>
+  <body>
+    <div style="text-align:center">
+        <h2></h2>
+        <h1></h1>
+
+        <input type="text" id="playlist" autofocus>
+        <input type="text" id="spotify_playlist" >
+        <button type="button" id="convert" onclick="reciveData()" ></button>
+
+        <div id="search">
+
+        </div>
+
+    </div>
+    <script src="scripts/main.js"></script>
+   <script type="text/javascript">
+        function reciveData(){
+          console.log('click');
+
+          var inputId = $("#playlist").val();
+          var spotifyPlaylist = $("#spotify_playlist").val();
+
+          $.ajax({
+            url: "http://api.deezer.com/playlist/"+inputId,
+          }).done(function(data){
+
+              search(data.tracks.data, function(track){
+                  if(track !== false){
+                      createPlay(track, spotifyPlaylist, function(added){
+                          console.log('added');
+                      });  
+                  }
+              });
+            });
+        }
+
+    </script> 
+    <script type="text/javascript">
+      function search(tracks, callback){
+          require(['$api/search#Search'],  function(Search){
+
+                while(track = tracks.shift()){
+                    var mySearch = Search.search(track.title);
+
+                    mySearch.tracks.snapshot(0, 1).done(function(a){
+                        if(a.range.length != 0){
+                          callback(String(a.get(0).uri));  
+                        }else{
+                            callback(false);
+                        }              
+                    })
+                }
+            });
+
+      }
+        
+      function createPlay(track, spotify, callback){
+          require(['$api/models'],  function(models){
+
+                  models.Playlist.fromURI(spotify).load('tracks').done(function(playlist) {
+                      playlist.tracks.add(models.Track.fromURI(track));
+                      callback(true);
+                  });
+          });
+
+      }
+
+
+    </script>
+  </body>
+</html>
