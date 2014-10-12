@@ -1,4 +1,4 @@
 deeztospot
 ==========
 
-Bacon DeezToSpot
+Convert a playlist from deezer to your spotify account.
